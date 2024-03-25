@@ -1,11 +1,17 @@
-module "ec2_instances" {
+module "ec2" {
   source = "./modules/ec2"
-  for_each = {
-    instance1 = { name = "EC2Prout1", type = "t3.micro" },
-  }
 
-  instance_name = each.value.name
-  instance_type = each.value.type
-  user_data = ""
-  instance_role_name = ""
+  instance_name = "ProutEC2"
+  instance_type = "t2.micro" // Ou tout autre type que vous souhaitez
+  user_data     = ""      // Si vous avez besoin de spécifier un script d'initialisation
+  instance_role_name = "LabRole"
+}
+
+module "sns_lambda" {
+  source = "./modules/sns-lambda"
+
+  sns_topic_name       = "mon-topic-sns"
+  email_subscription   = "monemail@example.com"
+  lambda_name          = "MaFonctionLambda"
+  lambda_role_arn      = "arn:aws:iam::851725207850:user/awsstudent" // Remplacer par le véritable ARN de votre rôle IAM
 }
