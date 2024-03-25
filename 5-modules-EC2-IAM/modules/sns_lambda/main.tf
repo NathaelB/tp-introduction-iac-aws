@@ -5,9 +5,10 @@ resource "aws_sns_topic" "example" {
 
 
 resource "aws_sns_topic_subscription" "example_email_subscription" {
+  for_each = toset(var.email_subscription)
   topic_arn = aws_sns_topic.example.arn
   protocol  = "email"
-  endpoint  = var.email_subscription
+  endpoint  = each.value
 }
 
 
@@ -17,12 +18,12 @@ resource "aws_lambda_function" "example_lambda" {
   function_name    = var.lambda_name
   role             = var.lambda_role_arn
   handler          = "index.handler"
-  source_code_hash = filebase64sha256("lambda_function.zip")
+  //source_code_hash = filebase64sha256("lambda_function.zip")
   runtime          = "nodejs20.x"
 
   environment {
     variables = {
-      SNS_TOPIC_ARN = aws_sns_topic.example_topic.arn
+      SNS_TOPIC_ARN = aws_sns_topic.example.arn
     }
   }
 }
