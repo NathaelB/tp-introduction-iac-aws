@@ -25,3 +25,9 @@ module "sns" {
   notification_message = "Prout"
   sns_topic_name = "ProutTopic"
 }
+
+module "notification" {
+  source = "./modules/watch"
+  sns_arn = module.sns.sns_topic_arn
+  threshold = 3
+}
